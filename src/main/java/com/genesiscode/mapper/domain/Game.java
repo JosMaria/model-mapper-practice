@@ -5,6 +5,7 @@ public class Game {
     private final Long id;
     private final String name;
     private Long timestamp;
+    private Player creator;
 
     public Game(Long id, String name) {
         this.id = id;
@@ -13,6 +14,9 @@ public class Game {
 
     public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
+    }
+    public void setCreator(Player creator) {
+        this.creator = creator;
     }
 
     // source must have getters
@@ -24,5 +28,8 @@ public class Game {
     }
     public Long getTimestamp() {
         return timestamp;
+    }
+    public Player getCreator() {
+        return creator;
     }
 }

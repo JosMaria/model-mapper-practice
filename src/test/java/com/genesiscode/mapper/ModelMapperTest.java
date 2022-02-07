@@ -1,6 +1,7 @@
 package com.genesiscode.mapper;
 
 import com.genesiscode.mapper.domain.Game;
+import com.genesiscode.mapper.domain.Player;
 import com.genesiscode.mapper.dto.GameDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,6 +50,26 @@ public class ModelMapperTest {
                 () -> assertEquals(game.getId(), gameDTO.getId()),
                 () -> assertEquals(game.getName(), gameDTO.getName()),
                 () -> assertEquals(game.getTimestamp(), gameDTO.getCreationTime())
+        );
+    }
+
+    @Test
+    public void whenMapGameWithDeepMapping_thenConvertsToDTO() {
+        // setup
+        TypeMap<Game, GameDTO> propertyMapper = mapper.createTypeMap(Game.class, GameDTO.class);
+        // add deep mapping to flatten source's Player objects into a single field in destination
+        propertyMapper.addMappings(mapper -> mapper.map(source -> source.getCreator().getName(), GameDTO::setCreator));
+        // when map between different hierarchies
+        Game game = new Game(1L, "Game 1");
+        game.setCreator(new Player(1L, "Jose Maria"));
+
+        GameDTO gameDTO = mapper.map(game, GameDTO.class);
+
+        //then
+        assertAll(
+                () -> assertEquals(game.getId(), gameDTO.getId()),
+                () -> assertEquals(game.getName(), gameDTO.getName()),
+                () -> assertEquals(game.getCreator().getName(), gameDTO.getCreator())
         );
     }
 }
