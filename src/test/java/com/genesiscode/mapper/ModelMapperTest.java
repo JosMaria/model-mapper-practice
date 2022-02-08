@@ -5,10 +5,12 @@ import com.genesiscode.mapper.domain.Player;
 import com.genesiscode.mapper.dto.GameDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 
 import java.time.Instant;
+import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -86,5 +88,24 @@ public class ModelMapperTest {
                 () -> assertNull(gameDTO.getId()),
                 () -> assertEquals(game.getName(), gameDTO.getName())
         );
+    }
+
+    @Test
+    public void whenMapGameWithCustomConverter_thenConvertsToDTO() {
+        // setup
+        TypeMap<Game, GameDTO> propertyMapper = mapper.createTypeMap(Game.class, GameDTO.class);
+        Converter<Collection<Player>, Integer> collectionToSize = mappingContext -> mappingContext.getSource().size();
+        propertyMapper.addMappings(mapper -> mapper.using(collectionToSize)
+                .map(Game::getPlayers, GameDTO::setTotalPlayers));
+
+        // when collection to size converter is provided
+        Game game = new Game();
+        game.addPlayer(new Player(1L, "Jose"));
+        game.addPlayer(new Player(2L, "Maria"));
+
+        GameDTO gameDTO = mapper.map(game, GameDTO.class);
+
+        // then it maps the size to a custom field
+        assertEquals(2, gameDTO.getTotalPlayers());
     }
 }

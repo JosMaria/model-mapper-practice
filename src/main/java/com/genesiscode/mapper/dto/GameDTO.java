@@ -6,6 +6,7 @@ public class GameDTO {
     private String name;
     private Long creationTime;
     private String creator;
+    private int totalPlayers;
 
     public Long getId() {
         return id;
@@ -18,6 +19,9 @@ public class GameDTO {
     }
     public String getCreator() {
         return creator;
+    }
+    public int getTotalPlayers() {
+        return totalPlayers;
     }
 
     // destination must have setters
@@ -32,6 +36,9 @@ public class GameDTO {
     }
     public void setCreator(String creator) {
         this.creator = creator;
+    }
+    public void setTotalPlayers(int totalPlayers) {
+        this.totalPlayers = totalPlayers;
     }
 
     @Override

@@ -1,15 +1,26 @@
 package com.genesiscode.mapper.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Game {
 
-    private final Long id;
-    private final String name;
+    private Long id;
+    private String name;
     private Long timestamp;
     private Player creator;
+    private final List<Player> players = new ArrayList<>();
 
+    public Game() {
+
+    }
     public Game(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public void addPlayer(Player player) {
+        players.add(player);
     }
 
     public void setTimestamp(Long timestamp) {
@@ -31,5 +42,8 @@ public class Game {
     }
     public Player getCreator() {
         return creator;
+    }
+    public List<Player> getPlayers() {
+        return players;
     }
 }
