@@ -10,8 +10,7 @@ import org.modelmapper.TypeMap;
 
 import java.time.Instant;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ModelMapperTest {
 
@@ -70,6 +69,22 @@ public class ModelMapperTest {
                 () -> assertEquals(game.getId(), gameDTO.getId()),
                 () -> assertEquals(game.getName(), gameDTO.getName()),
                 () -> assertEquals(game.getCreator().getName(), gameDTO.getCreator())
+        );
+    }
+
+    @Test
+    public void whenMapGameWithSkipIdProperty_thenConvertsToDTO() {
+        // setup
+        TypeMap<Game, GameDTO> propertyMapper = mapper.createTypeMap(Game.class, GameDTO.class);
+        propertyMapper.addMappings(mapper -> mapper.skip(GameDTO::setId));
+
+        // when id is skipped
+        Game game = new Game(1L, "Game 1");
+        GameDTO gameDTO = mapper.map(game, GameDTO.class);
+
+        assertAll(
+                () -> assertNull(gameDTO.getId()),
+                () -> assertEquals(game.getName(), gameDTO.getName())
         );
     }
 }
